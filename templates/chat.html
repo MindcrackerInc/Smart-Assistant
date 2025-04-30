@@ -1,23 +1,308 @@
-{% extends "base.html" %}
 {% load static %}
-{% block content %}
-<div class="d-flex">
-    <!-- Conversation History Sidebar -->
-    <div id="chatHistory" class="col-4 col-md-3 p-3 bg-light border-end" style="max-height: 80vh; overflow-y: auto;">
-        <h5>Conversation History</h5>
-        <div id="historyContent"></div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}Smart Assistant{% endblock %}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <script src="{% static 'js/chat.js' %}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <!-- Add CSS for dark mode -->
+  <style>
+    /* Dark mode styles */
+    @media (prefers-color-scheme: dark) {
+      html:not(.light) {
+        color-scheme: dark;
+      }
+    }
+    
+    /* Change from dark mode class style to attribute style for better Tailwind compatibility */
+    .dark * {
+      color-scheme: dark;
+    }
+    
+    html.dark {
+      color-scheme: dark;
+    }
+    
+    body.bg-dark {
+      background-color: #121212 !important;
+    }
+    
+    body.text-light {
+      color: #f8f9fa !important;
+    }
+    
+    html.dark .bg-white {
+      background-color: #1e1e1e !important;
+    }
+    
+    html.dark .bg-light {
+      background-color: #2d2d2d !important;
+    }
+    
+    html.dark .text-dark {
+      color: #e9ecef !important;
+    }
+    
+    html.dark .text-gray-700 {
+      color: #e0e0e0 !important;
+    }
+    
+    html.dark .text-gray-600 {
+      color: #cccccc !important;
+    }
+    
+    html.dark .bg-gray-50, 
+    html.dark .bg-gray-100, 
+    html.dark .bg-blue-50 {
+      background-color: #333333 !important;
+    }
+    
+    html.dark .border-gray-200,
+    html.dark .border-gray-100,
+    html.dark .border-blue-100 {
+      border-color: #444444 !important;
+    }
+    
+    /* Animation for theme transition */
+    body, .bg-white, .bg-light, .text-dark, .text-gray-700, 
+    .text-gray-600, .bg-gray-50, .bg-gray-100, .bg-blue-50,
+    .border-gray-200, .border-gray-100, .border-blue-100 {
+      transition: all 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+<div id="webcrumbs">
+  <div class="bg-gradient-to-br from-gray-50 to-slate-100 dark:from-gray-800 dark:to-gray-900 min-h-screen font-sans lg:min-w-[1024px] overflow-hidden">
+      <div class="relative max-w-7xl mx-auto">
+        <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200">
+          <div class="flex items-center space-x-3"> <span
+              class="material-symbols-outlined text-blue-500 text-2xl">chat</span>
+            <h1 class="text-xl font-bold">Smart Assistant</h1>
+          </div>
+          <div class="flex items-center space-x-3"> 
+            <button id="toggleHistory"
+              class="flex items-center space-x-1 text-sm bg-white border border-gray-200 rounded-full px-4 py-2 hover:bg-gray-100 transition-all duration-300 shadow-sm hover:shadow transform hover:-translate-y-0.5">
+              <span class="material-symbols-outlined text-blue-500 text-sm">history</span> <span>Toggle History</span>
+            </button> 
+            <button id="themeToggleBtn"
+              class="flex items-center space-x-1 text-sm bg-gradient-to-r from-gray-700 to-gray-900 text-white border border-gray-700 rounded-full px-4 py-2 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
+              <span id="themeToggle" class="material-symbols-outlined text-yellow-300 text-sm">dark_mode</span> <span>Toggle Theme</span>
+            </button> </div>
+        </div>
+        <div class="flex h-[calc(100vh-72px)]">
+          <div id="historyPanel" class="w-72 border-r border-gray-200 p-6 hidden md:block bg-white/60 shadow-inner">
+            <h2 class="font-medium mb-4 text-lg border-b pb-2 border-gray-200">Conversation History</h2>
+            <div id="chatHistory" class="d-none">
+              <div id="historyContent" class="space-y-2 mt-4">
+                <div
+                  class="p-3 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer flex items-center justify-between">
+                  <span class="text-sm truncate">Meeting Notes</span> <span class="text-xs text-gray-500">2h ago</span>
+                </div>
+                <div
+                  class="p-3 rounded-lg bg-blue-50 hover:bg-blue-100 transition-colors cursor-pointer flex items-center justify-between border-l-4 border-blue-500">
+                  <span class="text-sm truncate">Project Ideas</span> <span
+                    class="text-xs text-gray-500">Yesterday</span> </div>
+                <div
+                  class="p-3 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer flex items-center justify-between">
+                  <span class="text-sm truncate">Travel Planning</span> <span class="text-xs text-gray-500">3d
+                    ago</span> </div>
+              </div>
+            </div>
+            <div>
+              <div class="mt-6 p-3 bg-blue-50 rounded-lg border border-blue-100">
+                <h3 class="font-medium text-sm text-gray-700 mb-2">Quick Actions</h3>
+                <div class="space-y-2"> <button
+                    class="w-full text-left p-2 bg-white rounded flex items-center space-x-2 hover:bg-gray-50 transition-colors border border-gray-200">
+                    <span class="material-symbols-outlined text-blue-500">add</span> <span class="text-sm">New
+                      Conversation</span> </button> <button id="clearHistory"
+                    class="w-full text-left p-2 bg-white rounded flex items-center space-x-2 hover:bg-gray-50 transition-colors border border-gray-200">
+                    <span class="material-symbols-outlined text-red-500">delete</span> <span class="text-sm">Clear
+                      History</span> </button> </div>
+              </div>
+              <div class="mt-6 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                <h3 class="font-medium text-sm text-gray-700 mb-2">Suggested Topics</h3>
+                <div class="grid grid-cols-1 gap-2"> <button
+                    class="text-left p-2 bg-white rounded text-sm hover:bg-blue-50 transition-colors border border-gray-200">Write
+                    a blog post about AI</button> <button
+                    class="text-left p-2 bg-white rounded text-sm hover:bg-blue-50 transition-colors border border-gray-200">Help
+                    me learn JavaScript</button> <button
+                    class="text-left p-2 bg-white rounded text-sm hover:bg-blue-50 transition-colors border border-gray-200">Plan
+                    a trip to Europe</button> </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex-1 flex flex-col relative">
+            <div id="chatWindow" class="flex-1 overflow-y-auto p-4 space-y-6">
+              <div class="flex justify-end">
+                <div
+                  class="bg-blue-500 text-white rounded-lg p-3 max-w-xs md:max-w-md shadow-sm hover:shadow-md transition-shadow">
+                  <p>hi</p>
+                </div>
+              </div>
+              <div class="flex">
+                <div
+                  class="bg-white rounded-2xl rounded-tl-sm p-4 max-w-xs md:max-w-md border border-gray-200 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
+                  <div class="flex items-start space-x-3"> <span
+                      class="material-symbols-outlined text-blue-500">smart_toy</span>
+                    <div class="space-y-2">
+                      <p class="text-gray-700">Hello! How can I assist you today? I&#x27;m your Smart Assistant, ready
+                        to help with any questions or tasks you might have.</p>
+                      <div class="flex space-x-2 mt-2"> <button
+                          class="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs hover:bg-blue-100 transition-colors">Get
+                          started</button> <button
+                          class="bg-gray-50 text-gray-600 px-3 py-1 rounded-full text-xs hover:bg-gray-100 transition-colors">Learn
+                          more</button> </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex justify-end">
+                <div
+                  class="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-2xl rounded-tr-sm p-4 max-w-xs md:max-w-md shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
+                  <p>hi</p>
+                </div>
+              </div>
+              <div class="flex">
+                <div
+                  class="bg-white rounded-lg p-3 max-w-xs md:max-w-md border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                  <div class="flex items-start space-x-2"> <span
+                      class="material-symbols-outlined text-blue-500">smart_toy</span>
+                    <div class="space-y-2">
+                      <p class="text-gray-700">I see you&#x27;re trying to reach out. What can I help you with today?
+                        You can ask me about weather, news, or I can help you with tasks like setting reminders or
+                        creating notes.</p>
+                      <div class="grid grid-cols-2 gap-2 mt-2"> <button
+                          class="bg-gray-50 text-gray-700 px-2 py-1 rounded text-xs hover:bg-gray-100 transition-colors flex items-center justify-center">
+                          <span class="material-symbols-outlined text-xs mr-1">schedule</span> Set reminder </button>
+                        <button
+                          class="bg-gray-50 text-gray-700 px-2 py-1 rounded text-xs hover:bg-gray-100 transition-colors flex items-center justify-center">
+                          <span class="material-symbols-outlined text-xs mr-1">note_add</span> Create note </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex justify-end">
+                <div
+                  class="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-2xl rounded-tr-sm p-4 max-w-xs md:max-w-md shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
+                  <p>hi</p>
+                </div>
+              </div>
+              <div class="flex">
+                <div
+                  class="bg-white rounded-2xl rounded-tl-sm p-4 max-w-xs md:max-w-md border border-gray-200 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
+                  <div class="flex items-start space-x-3"> <span
+                      class="material-symbols-outlined text-blue-500 text-xl">smart_toy</span>
+                    <div class="space-y-2">
+                      <p class="text-gray-700">Hello! I noticed you&#x27;ve said &quot;hi&quot; a few times. I&#x27;m
+                        here and ready to assist you. Would you like to explore some of the things I can help you with?
+                      </p>
+                      <div class="bg-blue-50 p-3 rounded-lg mt-2 border border-blue-100">
+                        <p class="text-sm text-gray-700 font-medium">I can help with:</p>
+                        <ul class="text-sm text-gray-600 list-disc pl-5 mt-1 space-y-1">
+                          <li>Answering questions</li>
+                          <li>Finding information</li>
+                          <li>Providing suggestions</li>
+                          <li>Generating content</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+     
+            <div>
+              <div class="flex justify-end my-6">
+                <div
+                  class="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-2xl rounded-tr-sm p-4 max-w-xs md:max-w-md shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
+                  <p>Can you help me write an email?</p>
+                </div>
+              </div>
+              <div class="flex mb-6">
+                <div
+                  class="bg-white rounded-2xl rounded-tl-sm p-4 max-w-xs md:max-w-md border border-gray-200 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
+                  <div class="flex items-start space-x-3"> <span
+                      class="material-symbols-outlined text-blue-500 text-xl">smart_toy</span>
+                    <div class="space-y-2">
+                      <p class="text-gray-700">Of course! I&#x27;d be happy to help you write an email. Could you please
+                        provide some details about:</p>
+                      <ul class="list-disc pl-5 text-gray-600 text-sm space-y-1">
+                        <li>The recipient</li>
+                        <li>The purpose of the email</li>
+                        <li>Any specific points you want to include</li>
+                        <li>The tone you&#x27;d like (formal, casual, friendly)</li>
+                      </ul>
+                      <p class="text-gray-700 mt-2">Once you provide these details, I can draft an email for you.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex justify-end mb-6">
+                <div
+                  class="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-2xl rounded-tr-sm p-4 max-w-xs md:max-w-md shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
+                  <p>It&#x27;s to my boss about taking a day off next Friday for a doctor&#x27;s appointment. Keep it
+                    professional but friendly.</p>
+                </div>
+              </div>
+              <div class="flex mb-6">
+                <div
+                  class="bg-white rounded-2xl rounded-tl-sm p-4 max-w-xs md:max-w-md border border-gray-200 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
+                  <div class="flex items-start space-x-3"> <span
+                      class="material-symbols-outlined text-blue-500 text-xl">smart_toy</span>
+                    <div class="space-y-2">
+                      <p class="text-gray-700">Here&#x27;s a draft for your email:</p>
+                      <div class="bg-gray-50 p-3 rounded-lg border border-gray-200 text-sm">
+                        <p class="font-medium">Subject: Request for Time Off - Next Friday</p>
+                        <p class="mt-2">Dear [Boss&#x27;s Name],</p>
+                        <p class="mt-2">I hope this email finds you well. I&#x27;m writing to request a day off next
+                          Friday (date) as I have scheduled a doctor&#x27;s appointment that I need to attend.</p>
+                        <p class="mt-2">I&#x27;ll ensure all my pending tasks are completed before then and will arrange
+                          for any urgent matters to be covered during my absence.</p>
+                        <p class="mt-2">Please let me know if you need any additional information or if there&#x27;s
+                          anything specific you&#x27;d like me to address before my day off.</p>
+                        <p class="mt-2">Thank you for your consideration.</p>
+                        <p class="mt-2">Best regards,</p>
+                        <p>[Your Name]</p>
+                      </div>
+                      <div class="flex space-x-2 mt-3"> <button
+                          class="bg-blue-500 text-white px-3 py-1 rounded-lg text-xs hover:bg-blue-600 transition-colors">Copy
+                          to clipboard</button> <button
+                          class="bg-gray-200 text-gray-700 px-3 py-1 rounded-lg text-xs hover:bg-gray-300 transition-colors">Edit
+                          draft</button> </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>
+            <div class="border-t border-gray-200 p-4 bg-white/80 backdrop-blur-sm">
+              <form id="chatForm" class="flex items-center"> 
+                <input id="messageInput" type="text" placeholder="Type your message..."
+                  class="flex-1 border border-gray-300 rounded-full py-3 px-5 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent shadow-sm" />
+                <button type="submit"
+                  class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-full hover:shadow-lg transition-all duration-300 flex items-center space-x-2 transform hover:-translate-y-0.5">
+                  <span class="material-symbols-outlined">send</span> <span>Send</span> </button> 
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="absolute bottom-0 w-full text-center py-3 border-t border-gray-200 bg-white/50 backdrop-blur-sm">
+          <div class="flex justify-center items-center space-x-6"> <span class="text-xs text-gray-500">© 2025 Smart
+              Assistant. All rights reserved.</span>
+            <div class="flex space-x-4"> <a href="#"
+                class="text-xs text-gray-500 hover:text-blue-500 transition-colors">Privacy</a> <a href="#"
+                class="text-xs text-gray-500 hover:text-blue-500 transition-colors">Terms</a> <a href="#"
+                class="text-xs text-gray-500 hover:text-blue-500 transition-colors">Help</a> </div>
+          </div>
+        </div>
+      </div>
     </div>
-
-    <!-- Chat Window -->
-    <div id="chatWindow" class="d-flex flex-column p-4 mb-4 overflow-auto" style="max-height: 80vh; flex-grow: 1;"></div>
-</div>
-
-<form id="chatForm" class="d-flex gap-2 p-4">
-    <input id="messageInput" type="text" placeholder="Type your message..." class="form-control flex-grow-1">
-    <button type="submit" class="btn btn-primary">Send</button>
-</form>
-{% endblock %}
-
-{% block scripts %}
-<script src="{% static 'js/chat.js' %}"></script>
-{% endblock %}
+  </div>
+  </body>
+</html>

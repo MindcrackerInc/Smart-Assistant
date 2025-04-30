@@ -2,7 +2,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("chatForm");
     const input = document.getElementById("messageInput");
     const chatWindow = document.getElementById("chatWindow");
-    const themeToggle = document.getElementById("themeToggle");
+    const themeToggleBtn = document.getElementById("themeToggleBtn");
+    const themeToggleIcon = document.getElementById("themeToggle");
     const historyPanel = document.getElementById("historyPanel");
     const historyContent = document.getElementById("historyContent");
     const toggleHistory = document.getElementById("toggleHistory");
@@ -13,21 +14,44 @@ document.addEventListener("DOMContentLoaded", () => {
         chatHistory?.classList.toggle("d-none");
     });
 
-    themeToggle?.addEventListener("click", () => {
+    // Fixed theme toggle function
+    themeToggleBtn?.addEventListener("click", () => {
         const htmlEl = document.documentElement;
         const isDark = htmlEl.classList.toggle("dark");
+
+        // Store preference in localStorage
         localStorage.setItem("theme", isDark ? "dark" : "light");
+
+        // Update body classes
         document.body.classList.toggle("bg-dark", isDark);
         document.body.classList.toggle("text-light", isDark);
         document.body.classList.toggle("bg-light", !isDark);
         document.body.classList.toggle("text-dark", !isDark);
+
+        // Update toggle button icon
+        if (themeToggleIcon) {
+            themeToggleIcon.textContent = isDark ? "light_mode" : "dark_mode";
+        }
+
+        console.log("Theme toggled, isDark:", isDark);
     });
 
-    if (localStorage.getItem("theme") === "dark") {
-        document.documentElement.classList.add("dark");
-        document.body.classList.add("bg-dark", "text-light");
-        document.body.classList.remove("bg-light", "text-dark");
+    // Initialize theme from localStorage on page load
+    function initializeTheme() {
+        const savedTheme = localStorage.getItem("theme");
+        console.log("Initializing theme from localStorage:", savedTheme);
+
+        if (savedTheme === "dark") {
+            document.documentElement.classList.add("dark");
+            document.body.classList.add("bg-dark", "text-light");
+            document.body.classList.remove("bg-light", "text-dark");
+            if (themeToggleIcon) {
+                themeToggleIcon.textContent = "light_mode";
+            }
+        }
     }
+
+    initializeTheme();
 
     clearHistoryBtn?.addEventListener("click", () => {
         localStorage.removeItem("chatHistory");
@@ -106,7 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
         chatWindow.scrollTop = chatWindow.scrollHeight;
     }
 
-    form.addEventListener("submit", async (e) => {
+    form?.addEventListener("submit", async (e) => {
         e.preventDefault();
         const userMessage = input.value.trim();
         if (!userMessage) return;
