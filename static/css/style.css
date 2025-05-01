@@ -1067,14 +1067,72 @@ video {
     }
 }
 
-body {
-    line-height: inherit;
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
-    min-width: 100vw;
-    min-height: 100vh;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #ffffff, #d4d4d4);
+@media (prefers-color-scheme: dark) {
+    html:not(.light) {
+        color-scheme: dark;
+    }
+}
+
+/* Use class-based dark mode support */
+html.dark {
+    color-scheme: dark;
+}
+
+html.dark body.bg-dark {
+    background-color: #121212 !important;
+}
+
+html.dark body.text-light {
+    color: #f8f9fa !important;
+}
+
+/* Background overrides */
+html.dark .bg-white {
+    background-color: #1e1e1e !important;
+}
+
+html.dark .bg-light {
+    background-color: #2d2d2d !important;
+}
+
+html.dark .bg-gray-50,
+html.dark .bg-gray-100,
+html.dark .bg-blue-50 {
+    background-color: #333333 !important;
+}
+
+/* Text color overrides */
+html.dark .text-dark {
+    color: #e9ecef !important;
+}
+
+html.dark .text-gray-700 {
+    color: #e0e0e0 !important;
+}
+
+html.dark .text-gray-600 {
+    color: #cccccc !important;
+}
+
+/* Border overrides */
+html.dark .border-gray-100,
+html.dark .border-gray-200,
+html.dark .border-blue-100 {
+    border-color: #444444 !important;
+}
+
+/* Smooth transitions */
+body,
+.bg-white,
+.bg-light,
+.text-dark,
+.text-gray-700,
+.text-gray-600,
+.bg-gray-50,
+.bg-gray-100,
+.bg-blue-50,
+.border-gray-100,
+.border-gray-200,
+.border-blue-100 {
+    transition: all 0.3s ease;
 }
