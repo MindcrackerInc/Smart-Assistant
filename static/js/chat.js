@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("chatForm");
     const input = document.getElementById("messageInput");
     const chatWindow = document.getElementById("chatWindow");
@@ -10,12 +10,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const chatHistory = document.getElementById("chatHistory");
     const clearHistoryBtn = document.getElementById("clearHistory");
 
-    toggleHistory?.addEventListener("click", () => {
+    toggleHistory?.addEventListener("click", function () {
         chatHistory?.classList.toggle("d-none");
     });
 
     // Fixed theme toggle function
-    themeToggleBtn?.addEventListener("click", () => {
+    themeToggleBtn?.addEventListener("click", function () {
         const htmlEl = document.documentElement;
         const isDark = htmlEl.classList.toggle("dark");
 
@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     initializeTheme();
 
-    clearHistoryBtn?.addEventListener("click", () => {
+    clearHistoryBtn?.addEventListener("click", function () {
         localStorage.removeItem("chatHistory");
         historyContent.innerHTML = "";
     });
@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function formatTime(date) {
-        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
     }
 
     function addMessageToHistory(content, sender) {
@@ -88,25 +88,6 @@ document.addEventListener("DOMContentLoaded", () => {
         historyContent.appendChild(messageElem);
         historyPanel.scrollTop = historyPanel.scrollHeight;
         saveHistoryToLocalStorage();
-    }
-
-    function appendMessage(content, sender = 'user') {
-        const time = formatTime(new Date());
-        const messageElem = document.createElement("div");
-        messageElem.className = `chat-message ${sender === 'user' ? 'chat-user' : 'chat-bot'} mb-3`;
-        messageElem.innerHTML = `
-            <div class="d-flex align-items-start">
-                <div class="avatar me-2">
-                    <img src="/static/img/${sender}.png" alt="${sender}" width="40" height="40" class="rounded-circle">
-                </div>
-                <div>
-                    <div class="message bg-light p-3 rounded shadow-sm">${marked.parse(content)}</div>
-                    <div class="text-muted small mt-1">${time}</div>
-                </div>
-            </div>`;
-        chatWindow.appendChild(messageElem);
-        chatWindow.scrollTop = chatWindow.scrollHeight;
-        addMessageToHistory(content, sender);
     }
 
     function addTypingIndicator() {

@@ -3,6 +3,9 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="keywords" content="AI, Django, Chatbot, Transformers, NLP">
+    <meta name="description" content="A powerful AI chatbot built with Django and Transformers.">
     <title>
       {% block title %}
         Smart Assistant
@@ -62,121 +65,6 @@
             </div>
             <div class="flex-1 flex flex-col relative">
               <div id="chatWindow" class="flex-1 overflow-y-auto p-4 space-y-6">
-              {% comment %}   <div class="flex justify-end">
-                  <div class="bg-blue-500 text-white rounded-lg p-3 max-w-xs md:max-w-md shadow-sm hover:shadow-md transition-shadow">
-                    <p>hi</p>
-                  </div>
-                </div>
-                <div class="flex">
-                  <div class="bg-white rounded-2xl rounded-tl-sm p-4 max-w-xs md:max-w-md border border-gray-200 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
-                    <div class="flex items-start space-x-3">
-                      <span class="material-symbols-outlined text-blue-500">smart_toy</span>
-                      <div class="space-y-2">
-                        <p class="text-gray-700">Hello! How can I assist you today? I&#x27;m your Smart Assistant, ready to help with any questions or tasks you might have.</p>
-                        <div class="flex space-x-2 mt-2">
-                          <button class="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs hover:bg-blue-100 transition-colors">Get started</button> <button class="bg-gray-50 text-gray-600 px-3 py-1 rounded-full text-xs hover:bg-gray-100 transition-colors">Learn more</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="flex justify-end">
-                  <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-2xl rounded-tr-sm p-4 max-w-xs md:max-w-md shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
-                    <p>hi</p>
-                  </div>
-                </div>
-                <div class="flex">
-                  <div class="bg-white rounded-lg p-3 max-w-xs md:max-w-md border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-                    <div class="flex items-start space-x-2">
-                      <span class="material-symbols-outlined text-blue-500">smart_toy</span>
-                      <div class="space-y-2">
-                        <p class="text-gray-700">I see you&#x27;re trying to reach out. What can I help you with today? You can ask me about weather, news, or I can help you with tasks like setting reminders or creating notes.</p>
-                        <div class="grid grid-cols-2 gap-2 mt-2">
-                          <button class="bg-gray-50 text-gray-700 px-2 py-1 rounded text-xs hover:bg-gray-100 transition-colors flex items-center justify-center"><span class="material-symbols-outlined text-xs mr-1">schedule</span> Set reminder</button>
-                          <button class="bg-gray-50 text-gray-700 px-2 py-1 rounded text-xs hover:bg-gray-100 transition-colors flex items-center justify-center"><span class="material-symbols-outlined text-xs mr-1">note_add</span> Create note</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="flex justify-end">
-                  <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-2xl rounded-tr-sm p-4 max-w-xs md:max-w-md shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
-                    <p>hi</p>
-                  </div>
-                </div>
-                <div class="flex">
-                  <div class="bg-white rounded-2xl rounded-tl-sm p-4 max-w-xs md:max-w-md border border-gray-200 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
-                    <div class="flex items-start space-x-3">
-                      <span class="material-symbols-outlined text-blue-500 text-xl">smart_toy</span>
-                      <div class="space-y-2">
-                        <p class="text-gray-700">Hello! I noticed you&#x27;ve said &quot;hi&quot; a few times. I&#x27;m here and ready to assist you. Would you like to explore some of the things I can help you with?</p>
-                        <div class="bg-blue-50 p-3 rounded-lg mt-2 border border-blue-100">
-                          <p class="text-sm text-gray-700 font-medium">I can help with:</p>
-                          <ul class="text-sm text-gray-600 list-disc pl-5 mt-1 space-y-1">
-                            <li>Answering questions</li>
-                            <li>Finding information</li>
-                            <li>Providing suggestions</li>
-                            <li>Generating content</li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <div class="flex justify-end my-6">
-                    <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-2xl rounded-tr-sm p-4 max-w-xs md:max-w-md shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
-                      <p>Can you help me write an email?</p>
-                    </div>
-                  </div>
-                  <div class="flex mb-6">
-                    <div class="bg-white rounded-2xl rounded-tl-sm p-4 max-w-xs md:max-w-md border border-gray-200 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
-                      <div class="flex items-start space-x-3">
-                        <span class="material-symbols-outlined text-blue-500 text-xl">smart_toy</span>
-                        <div class="space-y-2">
-                          <p class="text-gray-700">Of course! I&#x27;d be happy to help you write an email. Could you please provide some details about:</p>
-                          <ul class="list-disc pl-5 text-gray-600 text-sm space-y-1">
-                            <li>The recipient</li>
-                            <li>The purpose of the email</li>
-                            <li>Any specific points you want to include</li>
-                            <li>The tone you&#x27;d like (formal, casual, friendly)</li>
-                          </ul>
-                          <p class="text-gray-700 mt-2">Once you provide these details, I can draft an email for you.</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="flex justify-end mb-6">
-                    <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-2xl rounded-tr-sm p-4 max-w-xs md:max-w-md shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
-                      <p>It&#x27;s to my boss about taking a day off next Friday for a doctor&#x27;s appointment. Keep it professional but friendly.</p>
-                    </div>
-                  </div>
-                  <div class="flex mb-6">
-                    <div class="bg-white rounded-2xl rounded-tl-sm p-4 max-w-xs md:max-w-md border border-gray-200 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
-                      <div class="flex items-start space-x-3">
-                        <span class="material-symbols-outlined text-blue-500 text-xl">smart_toy</span>
-                        <div class="space-y-2">
-                          <p class="text-gray-700">Here&#x27;s a draft for your email:</p>
-                          <div class="bg-gray-50 p-3 rounded-lg border border-gray-200 text-sm">
-                            <p class="font-medium">Subject: Request for Time Off - Next Friday</p>
-                            <p class="mt-2">Dear [Boss&#x27;s Name],</p>
-                            <p class="mt-2">I hope this email finds you well. I&#x27;m writing to request a day off next Friday (date) as I have scheduled a doctor&#x27;s appointment that I need to attend.</p>
-                            <p class="mt-2">I&#x27;ll ensure all my pending tasks are completed before then and will arrange for any urgent matters to be covered during my absence.</p>
-                            <p class="mt-2">Please let me know if you need any additional information or if there&#x27;s anything specific you&#x27;d like me to address before my day off.</p>
-                            <p class="mt-2">Thank you for your consideration.</p>
-                            <p class="mt-2">Best regards,</p>
-                            <p>[Your Name]</p>
-                          </div>
-                          <div class="flex space-x-2 mt-3">
-                            <button class="bg-blue-500 text-white px-3 py-1 rounded-lg text-xs hover:bg-blue-600 transition-colors">Copy to clipboard</button> <button class="bg-gray-200 text-gray-700 px-3 py-1 rounded-lg text-xs hover:bg-gray-300 transition-colors">Edit draft</button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              {% endcomment %}
               </div>
               <div class="border-t border-gray-200 p-4 bg-white/80 backdrop-blur-sm">
                 <form id="chatForm" class="flex items-center">

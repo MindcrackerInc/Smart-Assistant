@@ -1,13 +1,14 @@
 [MASTER]
 load-plugins=pylint_django
 ignore=migrations, settings.py
+django-settings-module=config.settings
 jobs=1
 
-# [MESSAGES CONTROL]
-# disable=
-#     missing-docstring,
+[MESSAGES CONTROL]
+disable=
+     missing-docstring,
 #     too-few-public-methods,
-#     no-member,
+     no-member,
 #     too-many-arguments,
 #     too-many-locals,
 #     too-many-instance-attributes,
@@ -45,6 +46,5 @@ max-nested-blocks=5
 [LOGGING]
 logging-modules=logging
 
-[MASTER]
-load-plugins=pylint_django
-django-settings-module=config.settings
+# [MASTER]
+# load-plugins=pylint_django

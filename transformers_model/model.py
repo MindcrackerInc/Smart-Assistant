@@ -26,14 +26,18 @@ def generate_response(prompt, max_tokens=512):
         "stream": False,  # 🚀 NORMAL, non-streaming
     }
 
-    response = requests.post(model_endpoint, headers=headers, json=payload)
+    response = requests.post(
+        model_endpoint, headers=headers, json=payload, timeout=1000
+    )
 
     if response.status_code != 200:
-        raise Exception(f"Request failed: {response.status_code}, {response.text}")
+        raise requests.exceptions.HTTPError(
+            f"Request failed: {response.status_code}, {response.text}"
+        )
 
     data = response.json()
 
     try:
         return data["choices"][0]["message"]["content"].strip()
     except (KeyError, IndexError) as e:
-        raise Exception(f"Unexpected response format: {data}") from e
+        raise ValueError(f"Unexpected response format: {data}") from e

@@ -1,9 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from transformers_model.model import generate_response
 from .models import Message, Session
-from transformers_model.model import (
-    generate_response,
-)  # Adjust import based on your project structure
 
 
 class ChatAPIView(APIView):

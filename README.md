@@ -59,7 +59,6 @@ Visit: `http://127.0.0.1:8000`
 | --------------------- | -------- | -------------------------------------- |
 | `/api/start-session/` | POST     | Start a new chat session               |
 | `/api/chat/`          | POST     | Send a message and receive AI response |
-| `/api/memory/`        | GET/POST | Retrieve or update session memory      |
 | `/api/history/`       | GET      | View full message history              |
 
 ---
@@ -128,15 +127,12 @@ smart_assistant/
 
 ├── chatbot/                      # Main app
 │   ├── __init__.py
-│   ├── admin.py
 │   ├── apps.py
 │   ├── models.py                # DB models: Session, Message, UserMemory
 │   ├── views.py                 # Django views
 │   ├── api_views.py             # Chat API endpoint
-│   ├── serializers.py           # (If using DRF or custom response structure)
 │   ├── urls.py                  # App-level URLs
 │   ├── forms.py                 # Input forms (if using Django forms)
-│   └── memory.py                # Context memory handler (cache or DB based)
 
 ├── templates/                   # HTML templates
 │   ├── base.html                # Layout base
@@ -150,7 +146,6 @@ smart_assistant/
 ├── transformers_model/          # AI Model logic
 │   ├── __init__.py
 │   ├── model.py                 # Load + respond using HuggingFace
-│   └── utils.py                 # Tokenization, cleaning, filters
 
 ├── tests/                       # Unit and integration tests
 │   ├── __init__.py
